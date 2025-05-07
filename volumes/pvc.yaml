@@ -3,8 +3,10 @@ apiVersion: v1
 metadata:
   name: myclaim
 spec:
-  accessModes:
+  storageClassName: ""
+  volumeName: 2gpv
+  accessModes:
   - ReadWriteOnce
   resources:
-    requests: 
+    requests: 
       storage: 1Gi

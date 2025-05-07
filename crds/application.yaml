@@ -1,0 +1,10 @@
+apiVersion: kro.run/v1alpha1
+kind: WebApplication
+metadata:
+  name: web-application-instance
+spec:
+  name: colour-translator-app
+  ingress:
+    enabled: false
+  applicationPort: 9000
+  image: agray998/helm-demo-app:v1

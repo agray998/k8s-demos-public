@@ -1,5 +1,5 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   labels:
     app: myapp
@@ -9,10 +9,6 @@ spec:
   selector:
     matchLabels:
       app: myapp
-  strategy:
-    rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 1
   template:
     metadata:
       labels:
@@ -39,7 +35,7 @@ metadata:
   labels:
     app: myapp-headless
   name: myapp-headless
-  namespace: default
+  # namespace: default
 spec:
   clusterIP: None
   ports:
@@ -55,7 +51,7 @@ metadata:
   labels:
     app: myapp
   name: myapp
-  namespace: default
+  # namespace: default
 spec:
   type: ClusterIP
   ports:

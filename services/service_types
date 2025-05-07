@@ -2,29 +2,31 @@
 . ../demo-magic.sh
 clear
 
-pe "kubectl create deploy myapp --image=httpd --port=80"
-pe "kubectl scale deploy myapp --replicas=5"
-pe "kubectl expose deploy myapp"
-pe "kubectl get svc myapp"
-pe 'IP=$(kubectl get svc myapp --no-headers -o=custom-columns=ip:.spec.clusterIP)'
-pe 'curl -w "\n" $IP'
+pe "kubectl create deploy webservers --image=httpd --port=80 --replicas=3"
+# pe "kubectl scale deploy myapp --replicas=3"
+pe "kubectl get po -o wide"
+pe "kubectl expose deploy webservers"
+pe "kubectl get svc webservers"
+# pe 'IP=$(kubectl get svc webservers --no-headers -o=custom-columns=ip:.spec.clusterIP)'
+# pe 'curl -w "\n" $IP'
+pe "kubectl get ep"
 pe "kubectl run tmp01 --image=tutum/dnsutils -- sleep infinity"
 pei "kubectl wait --for=condition=ready pod tmp01"
-pe "kubectl exec -it tmp01 -- nslookup myapp"
-pe "kubectl delete svc myapp"
-pe "kubectl expose deploy myapp --type=NodePort"
-pe "kubectl get svc myapp"
-pe "kubectl exec -it tmp01 -- nslookup myapp"
-pe 'PORT=$(kubectl get svc myapp -o=custom-columns=ip:.spec.ports[0].nodePort --no-headers)'
+pe "kubectl exec -it tmp01 -- nslookup webservers"
+pe "kubectl delete svc webservers"
+pe "kubectl expose deploy webservers --type=NodePort"
+pe "kubectl get svc webservers"
+pe "kubectl exec -it tmp01 -- nslookup webservers"
+pe 'PORT=$(kubectl get svc webservers -o=custom-columns=ip:.spec.ports[0].nodePort --no-headers)'
 pe 'echo $PORT'
 pe 'curl -w "\n" localhost:$PORT'
 pe "kubectl get ep"
-pe "kubectl delete svc myapp"
-pe "kubectl expose deploy myapp --type=LoadBalancer"
-pe "kubectl get svc myapp"
-pe "kubectl exec -it tmp01 -- nslookup myapp"
-pe "sleep 1"
-pe "kubectl get svc myapp"
-pei "kubectl delete deploy myapp"
-pei "kubectl delete svc myapp"
+pe "kubectl delete svc webservers"
+pe "kubectl expose deploy webservers --type=LoadBalancer"
+pe "kubectl get svc webservers"
+pe "kubectl exec -it tmp01 -- nslookup webservers"
+pe "sleep 5"
+pe "kubectl get svc webservers"
+pe "kubectl delete deploy webservers"
+pei "kubectl delete svc webservers"
 pei "kubectl delete pod tmp01"

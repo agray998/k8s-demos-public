@@ -1,13 +1,14 @@
 kind: PersistentVolume
 apiVersion: v1
 metadata:
-  name: 1gpv
+  name: 2gpv
   labels:
     type: local
 spec:
   capacity:
-    storage: 1Gi
+    storage: 2Gi
   accessModes:
     - ReadWriteOnce
   hostPath:
-    path: /somepath/data01
+    type: DirectoryOrCreate
+    path: /var/volumes/data01

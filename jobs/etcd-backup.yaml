@@ -1,0 +1,44 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: etcd-backup
+  namespace: kube-system
+spec:
+  schedule: "0 8 * * *"  # Run daily at 08:00 AM
+  jobTemplate:
+    spec:
+      activeDeadlineSeconds: 60
+      template:
+        spec:
+          nodeName: cp
+          containers:
+          - name: etcd-backup
+            image: bitnami/etcd:3.5.0
+            env:
+            - name: ALLOW_NONE_AUTHENTICATION
+              value: "yes"
+            securityContext:
+              runAsUser: 0
+              runAsGroup: 0
+            command:
+            - /bin/sh
+            - -c
+            - |
+              export ETCDCTL_API=3
+              etcdctl --endpoints=https://<etcd-endpoint>:2379 --cacert=/certs/ca.crt --cert=/certs/server.crt --key=/certs/server.key snapshot save /backups/snapshot-$(date +%m-%d-%y).db
+            volumeMounts:
+            - name: etcd-certs
+              mountPath: /certs
+              readOnly: true
+            - name: etcd-backup
+              mountPath: /backups
+          restartPolicy: OnFailure
+          volumes:
+          - name: etcd-certs
+            hostPath:
+              type: Directory
+              path: /etc/kubernetes/pki/etcd
+          - name: etcd-backup
+            hostPath:
+              type: DirectoryOrCreate
+              path: /etc/kubernetes/etcd/backups

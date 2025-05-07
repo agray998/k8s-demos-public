@@ -1,0 +1,9 @@
+apiVersion: stable.qa.com/v1alpha1
+kind: FetchNewLB
+metadata:
+  name: demo-newlb
+spec:
+  emailAddress: no@no.com
+  serviceName: foo
+  serviceNamespace: bar
+  serialNumber: "0012345"
