@@ -1,0 +1,5 @@
+namespace: staging
+resources:
+  - ../../base
+patches:
+  - path: deployment.yaml

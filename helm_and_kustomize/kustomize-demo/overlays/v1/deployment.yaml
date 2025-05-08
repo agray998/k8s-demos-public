@@ -1,0 +1,10 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demo-app
+spec:
+  template:
+    spec:
+      containers:
+      - image: agray998/helm-demo-app:v1
+        name: app

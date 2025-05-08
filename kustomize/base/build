@@ -1,5 +1,0 @@
-#!/bin/bash
-diff \
-    <(kubectl kustomize ../overlays/dev) \
-    <(kubectl kustomize ../overlays/prod) |\
-    more

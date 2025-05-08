@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: helm-demo
+spec:
+  strategy:
+    type: RollingUpdate
+  replicas: 3
+  selector:
+    matchLabels:
+      app: colour-translator
+  template:
+    metadata:
+      labels:
+        app: colour-translator
+    spec:
+      containers:
+      - image: "agray998/helm-demo-app:v1"
+        imagePullPolicy: Always
+        name: colour-translator
+        env:
+        - name: PORT
+          value: "8000"
+        ports:
+        - containerPort: 8000
