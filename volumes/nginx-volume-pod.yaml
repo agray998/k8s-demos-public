@@ -6,17 +6,31 @@ metadata:
     app: nginx
 spec:
   initContainers:
-  - args:
+  - image: busybox
+    resources:
+      requests:
+        cpu: 100m
+        memory: 100Mi
+      limits:
+        cpu: 100m
+        memory: 100Mi
+    args:
     - /bin/sh
     - -c
     - 'printf "<h1>VolumeFile</h1>\n<p>This is a custom page</p>\n" > /mnt/vol/html/page1.html'
-    image: busybox
     name: initialiser
     volumeMounts:
     - mountPath: /mnt/vol/html
       name: demo-volume
   containers:
   - image: nginx:1.20-alpine
+    resources:
+      requests:
+        cpu: 100m
+        memory: 100Mi
+      limits:
+        cpu: 100m
+        memory: 100Mi
     name: nginx-server
     volumeMounts:
     - mountPath: /usr/share/nginx/html/custom
@@ -26,4 +40,3 @@ spec:
   volumes:
   - name: demo-volume
     emptyDir: {}
-
