@@ -1,0 +1,15 @@
+FROM alpine
+
+RUN apk update && apk add nginx
+
+WORKDIR /usr/share/nginx/html/custom
+
+COPY html/* .
+
+RUN sed -i /etc/nginx/http.d/default.conf -e "s,return 404,root /usr/share/nginx/html,g;"
+
+ARG foo=bar
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]
