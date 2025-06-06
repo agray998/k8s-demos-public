@@ -1,7 +1,6 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: deployment
 metadata:
-  creationTimestamp: null
   labels:
     app: dodgy
   name: dodgy
@@ -13,19 +12,23 @@ spec:
   strategy: {}
   template:
     metadata:
-      creationTimestamp: null
       labels:
         app: dodgy
     spec:
       containers:
-      - image: nginx
+      - image: ngnix
         name: nginx
         volumeMounts:
         - mountPath: /etc/nginx
           name: nginx-conf
-        resources: {}
+        resources:
+          requests:
+            cpu: 10m
+            memory: 100Mi
+          limits:
+            cpu: 100m
+            memory: 500Mi
       volumes:
       - name: nginx-conf
         configMap:
           name: nginx
-status: {}
