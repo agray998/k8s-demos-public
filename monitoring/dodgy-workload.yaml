@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: dodgy
+  name: dodgy
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: dodgy
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: dodgy
+    spec:
+      containers:
+      - image: nginx
+        name: nginx
+        volumeMounts:
+        - mountPath: /etc/nginx
+          name: nginx-conf
+        resources: {}
+      volumes:
+      - name: nginx-conf
+        configMap:
+          name: nginx
+status: {}

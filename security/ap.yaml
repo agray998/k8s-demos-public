@@ -2,7 +2,7 @@
 apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingAdmissionPolicy
 metadata:
-  name: "demo-policy.example.com"
+  name: "enforce-taints"
 spec:
   failurePolicy: Fail
   matchConstraints:
@@ -10,18 +10,18 @@ spec:
     - apiGroups:   [""]
       apiVersions: ["v1"]
       operations:  ["CREATE", "UPDATE"]
-      resources:   ["services"]
+      resources:   ["pods"]
   validations:
-    - expression: "object.spec.type == 'ClusterIP'"
+    - expression: "object.spec.schedulerName != 'only-soft-taints'"
 ---
 apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingAdmissionPolicyBinding
 metadata:
-  name: "demo-binding-test.example.com"
+  name: "enforce-taints-binding"
 spec:
-  policyName: "demo-policy.example.com"
+  policyName: "enforce-taints"
   validationActions: [Deny] # or Warn or Audit
   matchResources:
     namespaceSelector:
       matchLabels:
-        environment: example
+        env: prod
