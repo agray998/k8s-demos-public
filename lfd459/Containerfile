@@ -1,6 +1,0 @@
-FROM docker.io/library/python:3.12
-WORKDIR /app
-RUN mkdir logs
-COPY logger.py .
-CMD [ "python3", "logger.py" ]
-
