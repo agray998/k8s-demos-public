@@ -1,0 +1,89 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: simple
+  name: simple
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: simple
+  template:
+    metadata:
+      labels:
+        app: simple
+    spec:
+      initContainers:
+      - name: writer
+        image: busybox
+        resources:
+          requests:
+            cpu: 100m
+            memory: 50Mi
+          limits:
+            cpu: 100m
+            memory: 50Mi
+        volumeMounts:
+        - name: logs-vol
+          mountPath: /foo
+        command:
+        - /bin/sh
+        - -c
+        - "printf '<h1>Foo</h1>\n' > /foo/bar"
+      containers:
+      - image: 10.97.40.62:5000/simple-app:v4
+        name: simple-app
+        volumeMounts:
+        - name: logs-vol
+          mountPath: /app/logs
+        readinessProbe:
+          exec:
+            command:
+            - stat
+            - /app/logs/date.out
+          periodSeconds: 5
+        resources:
+          requests:
+            cpu: 100m
+            memory: 50Mi
+          limits:
+            cpu: 100m
+            memory: 50Mi
+      - image: fluentd
+        name: tail
+        env:
+        - name: FLUENTD_OPT
+          value: -c /fluentd/etc/fluent.conf
+        # resources:
+        #   requests:
+        #     cpu: 100m
+        #     memory: 50Mi
+        #   limits:
+        #     cpu: 100m
+        #     memory: 50Mi
+        volumeMounts:
+        - name: logs-vol
+          mountPath: /var/log
+        - name: fluent-conf
+          mountPath: /fluentd/etc
+      - name: scrape
+        resources:
+          requests:
+            cpu: 100m
+            memory: 50Mi
+          limits:
+            cpu: 100m
+            memory: 50Mi
+        image: nginx:alpine
+        volumeMounts:
+        - name: logs-vol
+          mountPath: /usr/share/nginx/html
+      volumes:
+      - name: logs-vol
+        persistentVolumeClaim:
+          claimName: myclaim
+      - name: fluent-conf
+        configMap:
+          name: fluent-cm
+      terminationGracePeriodSeconds: 0

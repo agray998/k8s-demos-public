@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: simple
+  name: simple
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: simple
+  template:
+    metadata:
+      labels:
+        app: simple
+    spec:
+      containers:
+      - image: 10.97.40.62:5000/simple-app:v1
+        name: simple-app
+        readinessProbe:
+          exec:
+            command:
+            - stat
+            - /app/date.out
+          periodSeconds: 5
+        resources:
+          requests:
+            cpu: 100m
+            memory: 50Mi
+          limits:
+            cpu: 100m
+            memory: 50Mi
