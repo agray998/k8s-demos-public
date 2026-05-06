@@ -14,9 +14,9 @@
                   "module": "chaosk8s.pod.probes",
                   "func": "count_min_pods",
                   "arguments": {
-                      "label_selector": "app=devops-webapp",
-                      "min_count": 3,
-                      "ns": "webapp"
+                      "label_selector": "app=simple",
+                      "min_count": 1,
+                      "ns": "simple-app"
                   }
               }
           }
@@ -31,9 +31,9 @@
               "module": "chaosk8s.pod.actions",
               "func": "terminate_pods",
               "arguments": {
-                  "label_selector": "app=devops-webapp",
+                  "label_selector": "app=simple",
                   "rand": true,
-                  "ns": "webapp"
+                  "ns": "simple-app"
               }
           },
           "pauses": {
