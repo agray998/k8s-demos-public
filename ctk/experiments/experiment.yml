@@ -1,0 +1,12 @@
+---
+apiVersion: chaostoolkit.org/v1
+kind: ChaosToolkitExperiment
+metadata:
+  name: validate-deploy-resilience-build
+  namespace: chaostoolkit-crd
+spec:
+  namespace: simple-app
+  pod:
+    image: chaostoolkit/chaostoolkit:full
+    experiment:
+      configMapName: chaos-exp 
