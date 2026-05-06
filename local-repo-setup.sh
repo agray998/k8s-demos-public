@@ -27,7 +27,7 @@ EOF
 sudo containerd config default | sudo tee /etc/containerd/config.toml
 # Below line is added due to a bug in SystemdCgroup - its redundant and will be removed in future release
 sudo sed -e 's/SystemdCgroup = false/SystemdCgroup = true/g' -i /etc/containerd/config.toml
-sudo sed -e "s,config_path = '', config_path = '/etc/containerd/certs.d',g" -i /etc/containerd/config.toml
+sudo sed -e "s,config_path = '',config_path = '/etc/containerd/certs.d',g" -i /etc/containerd/config.toml
 
 sudo mkdir -p /etc/containerd/certs.d/10.97.40.62:5000/
 sudo cat << EOF | sudo tee /etc/containerd/certs.d/10.97.40.62:5000/hosts.toml
