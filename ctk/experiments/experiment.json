@@ -1,0 +1,44 @@
+{
+  "title": "Do we remain available in face of pod going down?",
+  "description": "We expect Kubernetes to handle the situation gracefully when a pod goes down",
+  "tags": ["kubernetes"],
+  "steady-state-hypothesis": {
+      "title": "Verifying service remains healthy",
+      "probes": [
+          {
+              "name": "count-min-pods",
+              "type": "probe",
+              "tolerance": true,
+              "provider": {
+                  "type": "python",
+                  "module": "chaosk8s.pod.probes",
+                  "func": "count_min_pods",
+                  "arguments": {
+                      "label_selector": "app=devops-webapp",
+                      "min_count": 3,
+                      "ns": "webapp"
+                  }
+              }
+          }
+      ]
+  },
+  "method": [
+      {
+          "type": "action",
+          "name": "terminate-app-pod",
+          "provider": {
+              "type": "python",
+              "module": "chaosk8s.pod.actions",
+              "func": "terminate_pods",
+              "arguments": {
+                  "label_selector": "app=devops-webapp",
+                  "rand": true,
+                  "ns": "webapp"
+              }
+          },
+          "pauses": {
+              "after": 5
+          }
+      }
+  ]
+}
