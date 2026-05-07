@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: crashy
+  name: crashy
+spec:
+  containers:
+  - image: busybox
+    name: crashy
+    command:
+    - /bin/sh
+    - -c
+    - "for i in 1 2 3 4 5 6; do echo `date`; sleep 3; done && exit 1"
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}
