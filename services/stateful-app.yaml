@@ -15,21 +15,30 @@ spec:
       labels:
         app: myapp
     spec:
-      containers:
+      initContainers:
       - image: busybox
-        name: myapp
-        resources: {}
+        name: init
         volumeMounts:
         - name: statefiles
-          mountPath: /var/app
+          mountPath: /var/state
+        - name: nginx-conf
+          mountPath: /var/conf
         command:
         - /bin/sh
         - -c
-        - "while true; do cat /var/app/$(hostname).state; done"
+        - "cp /var/state/`hostname`.conf /var/conf/nginx.conf"
+      containers:
+      - image: nginx:alpine
+        name: myapp
+        volumeMounts:
+        - name: nginx-conf
+          mountPath: /etc/nginx
       volumes:
       - name: statefiles
         persistentVolumeClaim:
           claimName: myapp-claim
+      - name: nginx-conf
+        emptyDir: {}
 ---
 apiVersion: v1
 kind: Service
@@ -45,4 +54,3 @@ spec:
     targetPort: 80
   selector:
     app: myapp
-
