@@ -1,0 +1,9 @@
+apiVersion: policy.linkerd.io/v1alpha1
+kind: MeshTLSAuthentication
+metadata:
+  name: get-authn
+  namespace: default
+spec:
+  identityRefs:
+    - kind: ServiceAccount
+      name: webapp
