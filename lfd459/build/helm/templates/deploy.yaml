@@ -1,0 +1,92 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ .Release.Name }}-simple-app
+  name: {{ .Release.Name }}-simple-app
+spec:
+  replicas: 3
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-simple-app
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-simple-app
+    spec:
+      initContainers:
+      - name: init
+        image: busybox
+        volumeMounts:
+        - name: logs
+          mountPath: /var/log
+        command:
+        - /bin/sh
+        - -c
+        - "touch /var/log/date.out"
+        resources:
+          requests:
+            cpu: 10m
+            memory: 10Mi
+          limits:
+            cpu: 10m
+            memory: 10Mi
+      volumes:
+      - name: logs
+        emptyDir: {}
+      - name: fluent-conf
+        configMap:
+          name: fluent-cm
+      containers:
+      - image: {{ printf "10.97.40.62:5000/simple-app:v%s" .Chart.AppVersion }}
+        name: simple-app
+        env:
+        - name: LOG_LEVEL
+          valueFrom:
+            configMapKeyRef:
+              name: {{ .Values.cm.name }}
+              key: LOG_LEVEL
+        volumeMounts:
+        - name: logs
+          mountPath: /app/logs
+        startupProbe:
+          exec:
+            command:
+              - stat
+              - /app/logs/date.out
+          periodSeconds: 30
+        resources:
+          requests:
+            cpu: 10m
+            memory: 10Mi
+          limits:
+            cpu: 10m
+            memory: 10Mi
+      - name: logger
+        image: fluentd
+        volumeMounts:
+        - name: logs
+          mountPath: /var/log/simple-app
+        - name: fluent-conf
+          mountPath: /fluentd/etc
+        env:
+        - name: FLUENTD_OPT
+          value: /fluentd/etc/fluent.conf
+      - name: log-proxy
+        image: nginx:alpine
+        volumeMounts:
+        - name: logs
+          mountPath: /usr/share/nginx/html
+        resources:
+          requests:
+            cpu: 100m
+            memory: 50Mi
+          limits:
+            cpu: 100m
+            memory: 50Mi
