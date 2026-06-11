@@ -1,0 +1,21 @@
+apiVersion: v1
+data:
+  fluent.conf: |
+    <source>
+        @type tail
+        format none
+        <parse>
+            @type regexp
+            expression /^(?<version>[^ ]*) (?<logtime>[^/]*) -- (?<host>[^ ]*) -- (?<uname_s>[^ ]*) (?<uname_r>[^ ]*) (?<uname_v>[^/]*)$/
+        </parse>
+        path /var/log/simple-app/date.out
+        tag count.format1
+    </source>
+
+    <match *.**>
+        @type stdout
+        id stdout_output
+    </match>
+kind: ConfigMap
+metadata:
+  name: fluent-cm
