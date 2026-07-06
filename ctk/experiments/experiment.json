@@ -15,7 +15,7 @@
                   "func": "count_min_pods",
                   "arguments": {
                       "label_selector": "app=simple",
-                      "min_count": 1,
+                      "min_count": 3,
                       "ns": "simple-app"
                   }
               }
