@@ -4,8 +4,8 @@ export KRO_VERSION=$(curl -sL \
     jq -r '.tag_name | ltrimstr("v")'
 )
 
-test -z $KRO_VERSION && exit || \
-  helm install kro oci://ghcr.io/kro-run/kro/kro \
-    --namespace kro \
-    --create-namespace \
-    --version=${KRO_VERSION}
+helm install kro oci://registry.k8s.io/kro/charts/kro \
+  --namespace kro-system \
+  --create-namespace \
+  --version=${KRO_VERSION}
+
