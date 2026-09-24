@@ -1,0 +1,1 @@
+kubectl run grpcurl --rm -it --image=networld/grpcurl --restart=Never --command -- ./grpcurl -plaintext voting-svc.emojivoto.svc.cluster.local:8080 emojivoto.v1.VotingService/VoteDog
