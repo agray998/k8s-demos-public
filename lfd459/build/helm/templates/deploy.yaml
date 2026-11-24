@@ -20,16 +20,20 @@ spec:
       labels:
         app: {{ .Release.Name }}-simple-app
     spec:
+      resources:
+        limits:
+          cpu: 300m
+          memory: 100Mi
       initContainers:
       - name: init
         image: busybox
         volumeMounts:
         - name: logs
-          mountPath: /var/log
+          mountPath: /var/log/app
         command:
         - /bin/sh
         - -c
-        - "touch /var/log/date.out"
+        - "touch /var/log/app/date.out"
         resources:
           requests:
             cpu: 10m
@@ -61,13 +65,6 @@ spec:
               - stat
               - /app/logs/date.out
           periodSeconds: 30
-        resources:
-          requests:
-            cpu: 10m
-            memory: 10Mi
-          limits:
-            cpu: 10m
-            memory: 10Mi
       - name: logger
         image: fluentd
         volumeMounts:
@@ -83,10 +80,3 @@ spec:
         volumeMounts:
         - name: logs
           mountPath: /usr/share/nginx/html
-        resources:
-          requests:
-            cpu: 100m
-            memory: 50Mi
-          limits:
-            cpu: 100m
-            memory: 50Mi
