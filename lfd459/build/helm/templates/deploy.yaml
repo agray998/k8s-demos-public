@@ -43,7 +43,8 @@ spec:
             memory: 10Mi
       volumes:
       - name: logs
-        emptyDir: {}
+        persistentVolumeClaim:
+          claimName: {{ .Release.Name }}-pvc
       - name: fluent-conf
         configMap:
           name: fluent-cm
