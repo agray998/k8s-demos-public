@@ -2,3 +2,6 @@ cm:
   name: simple-cm
   data:
     LOG_LEVEL: ERROR
+
+pvc:
+  storageClassName: "nfs-client"
