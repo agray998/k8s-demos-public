@@ -35,8 +35,8 @@ spec:
           mountPath: /etc/nginx
       volumes:
       - name: statefiles
-        persistentVolumeClaim:
-          claimName: myapp-claim
+        configMap:
+          name: sts-files
       - name: nginx-conf
         emptyDir: {}
 ---
